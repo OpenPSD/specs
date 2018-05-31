@@ -55,6 +55,13 @@ components:
       type: string
     ConsentStatus:
       type: string
+      enum:
+        - received
+        - rejected
+        - valid
+        - revokedByPsu
+        - expired
+        - terminatedByTpp
       description: 'authentication status of the consent'
     Currency:
       type: string
@@ -130,10 +137,11 @@ components:
           description: The amount given with fractional digits, where fractions must be compliant to the currency definition. Up to 14 significant figures. Negative amounts are signed by minus. The decimal separator is a dot.
     AccountReference:
       type: object
+      description: 'This type is containing any account identification which can be used on payload-level to address specific accounts. The ASPSP will document which account reference type it will support. Exactly one of the attributes defined as "conditional" shall be used.'
       properties:
         iban:
           type: string
-          format: iban
+          pattern: '^[A-Z]{2}[0-9]{2}[A-Z0-9]{1-30}$'
           description: This data element can be used in the body of the Consent Request Message for retrieving account access consent from this payment account.
         bban:
           type: string
@@ -266,6 +274,9 @@ components:
           description: 'The following links might be used within this context, account link (mandatory), first_page_link (optional), second_page_link (optional), current_page_ link (optional), last_page_link (optional)'
     Balance:
       type: object
+      required:
+        - balanceAmount
+        - balanceType
       properties:
         balanceAmount:
           $ref: '#/components/schemas/Amount'
@@ -289,6 +300,16 @@ components:
           maxLength: 35
     TransactionStatus:
       type: string
+      enum:
+       - ACCP
+       - ACSC 
+       - ACSP 
+       - ACTC 
+       - ACWC
+       - ACWP
+       - RCVD
+       - PDNG
+       - RJCT 
     Transaction:
       type: object
       required:
