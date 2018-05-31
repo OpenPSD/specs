@@ -27,6 +27,7 @@ components:
     consentId:
       type: string
       description: 'Identification of the consent resource as it is used in the API structure. Shall be contained, if a consent resource was generated.'
+      example: 'qwer3456tzui7890'
     frequency:
       type: string
       enum:
@@ -53,6 +54,7 @@ components:
       type: string
     Authorization:
       type: string
+      example: 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ'
     ConsentStatus:
       type: string
       enum:
@@ -63,10 +65,12 @@ components:
         - expired
         - terminatedByTpp
       description: 'authentication status of the consent'
+      example: 'received'
     Currency:
       type: string
       description: ISO 4217 Alpha 3 currency code
       maxLength: 3
+      example: 'EUR'
     ExchangeRate:
       type: object
       required:
@@ -87,6 +91,7 @@ components:
         rateDate:
           type: string
           format: date
+          example: '2017-10-30'
         rateContract:
           type: string
     PSUData:
@@ -94,6 +99,7 @@ components:
       properties:
         password:
           type: string
+          example: 'very42secret%'
     Address:
       type: object
       required:
@@ -134,7 +140,8 @@ components:
           $ref: '#/components/schemas/Currency'
         amount:
           type: string
-          description: The amount given with fractional digits, where fractions must be compliant to the currency definition. Up to 14 significant figures. Negative amounts are signed by minus. The decimal separator is a dot.
+          description: 'The amount given with fractional digits, where fractions must be compliant to the currency definition. Up to 14 significant figures. Negative amounts are signed by minus. The decimal separator is a dot.'
+          example: '123.42'
     AccountReference:
       type: object
       description: 'This type is containing any account identification which can be used on payload-level to address specific accounts. The ASPSP will document which account reference type it will support. Exactly one of the attributes defined as "conditional" shall be used.'
@@ -142,7 +149,8 @@ components:
         iban:
           type: string
           pattern: '^[A-Z]{2}[0-9]{2}[A-Z0-9]{1-30}$'
-          description: This data element can be used in the body of the Consent Request Message for retrieving account access consent from this payment account.
+          description: 'This data element can be used in the body of the Consent Request Message for retrieving account access consent from this payment account.'
+          example: 'DE89370400440532013000'
         bban:
           type: string
           format: bban
@@ -190,6 +198,7 @@ components:
           enum:
             - allAccounts
           description: 'Optional if supported by API provide. Only the value "allAccounts" is admitted.'
+          example: 'allAccounts'
     AccountDetails:
       type: object
       required:
@@ -202,7 +211,8 @@ components:
         iban:
           type: string
           format: iban
-          description: This data element can be used in the body of the Consent Request Message for retrieving account access consent from this payment account.
+          description: 'This data element can be used in the body of the Consent Request Message for retrieving account access consent from this payment account.'
+          example: 'DE89370400440532013000'
         bban:
           type: string
           format: bban
@@ -244,6 +254,7 @@ components:
           type: string
           maxLength: 140
           description: 'Specifies the usage of the account - PRIV: private personal account - ORGA: professional account'
+          example: 'PRIV'
         details:
           type: string
           maxLength: 140
@@ -289,12 +300,14 @@ components:
             - openingBooked
             - interimAvailable
             - forwardAvailable
+          example: 'interimAvailable'
         lastChangeDateTime:
           type: string
           format: date-time
         referenceDate:
           type: string
           format: date
+          example: '2017-10-30'
         lastCommittedTransaction:
           type: string
           maxLength: 35
@@ -309,7 +322,8 @@ components:
        - ACWP
        - RCVD
        - PDNG
-       - RJCT 
+       - RJCT
+      example: 'ACTC'
     Transaction:
       type: object
       required:
@@ -330,6 +344,7 @@ components:
           type: string
           description: Identification of a Cheque.
           maxLength: 35
+          example: 'Mandate-2018-04-20-1234'
         creditorId:
           type: string
           description: Identification of Creditors, e.g. a SEPA Creditor ID
@@ -338,10 +353,12 @@ components:
           type: string
           format: date
           description: The Date when an entry is posted to an account on the ASPSPs books.
+          example: '2017-10-30'
         valueDate:
           type: string
           format: date
           description: The Date at which assets become available to the account owner in case of a credit
+          example: '2017-10-30'
         transactionAmount:
           $ref: '#/components/schemas/Amount'
         exchangeRates:
@@ -378,7 +395,8 @@ components:
         proprietaryBankTransactionCode:
           type: string
           maxLength: 35
-          description: proprietary bank transaction code as used within a community or within an ASPSP e.g. for MT94x based transaction reports
+          description: 'proprietary bank transaction code as used within a community or within an ASPSP e.g. for MT94x based transaction reports'
+          example: 'PMNT-RCVD-ESDD'
         _links:
           $ref: '#/components/schemas/Links'
           description: 'The following links could be used here: transactionDetails for retrieving details of a transaction.'
@@ -530,6 +548,7 @@ components:
         # PIISSpecificErrorCodes
         - CARD_INVALID
         - NO_PIIS_ACTIVATION
+      example: TOKEN_INVALID
     TppMessage:
       type: object
       required:
@@ -539,11 +558,16 @@ components:
       properties:
         category:
           type: string
+          enum:
+            - WARNING
+            - ERROR
+          example: 'ERROR'
         code:
           $ref: '#/components/schemas/MessageCode'
         text:
           type: string
           maxLength: 512
+          example: 'additional text information of the ASPSP up to 512 characters'
         path:
           type: string
     recurringIndicator:
@@ -566,9 +590,11 @@ components:
           type: string
           format: date
           description: 'This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. If a maximal available date is requested, a date in far future is to be used: "9999-12-31". The consent object to be retrieved by the GET Consent Request will contain the adjusted date.'
+          example: '2017-10-30'
         frequencyPerDay:
           type: integer
           description: 'This field indicates the requested maximum frequency for an access per day. For a one-off access, this attribute is set to "1".'
+          example: 1
         combinedServiceIndicator:
           type: boolean
           description: 'If "true" indicates that a payment initiation service will be addressed in the same "session", cp. Section 8.'
@@ -577,10 +603,15 @@ components:
     Content-Type:
       name: Content-Type
       in: header
-      description: 'application/json'
+      description: 'Content-Type'
       required: true
       schema:
         type: string
+        enum:
+          - application/json
+          - application/xml
+          - application/text
+        example: 'application/json'
     account-id:
       name: account-id
       in: path
@@ -595,13 +626,16 @@ components:
       required: true
       schema:
         type: integer
+      example: 1234570
     resourceId:
       name: resourceId
       in: path
       description: This identification is given by the attribute resourceId of the corresponding entry of a transaction list.
       required: true
       schema:
-        type: integer
+        type: string
+        maxLength: 35
+      example: '3dc3d5b3-7023-4848-9853-f5400a64e80f'
     consentId:
       name: consentId
       in: path
@@ -609,6 +643,7 @@ components:
       required: true
       schema:
         type: string
+      example: 'qwer3456tzui7890'
     payment-product:
       name: payment-product
       in: path
@@ -621,6 +656,7 @@ components:
           - instant-sepa-credit-transfers
           - target-2-payments
           - cross-border-credit-transfers
+      example: 'sepa-credit-transfers'
     payment-service:
       name: payment-service
       in: path
@@ -632,6 +668,7 @@ components:
           - payments
           - bulk-payments
           - periodic-payments
+      example: 'payments'
     paymentId:
       name: paymentId
       in: path
@@ -639,6 +676,7 @@ components:
       required: true
       schema:
        type: string
+      example: '1234-wertiq-983'
     withBalance:
       name: withBalance
       in: query
@@ -654,6 +692,7 @@ components:
       schema:
         type: string
         format: uuid
+      example: '123e4567-e89b-12d3-a456-426655440000'
     Consent-ID:
       name: Consent-ID
       in: header
@@ -661,6 +700,7 @@ components:
       required: true
       schema:
         type: string
+      example: 'qwer3456tzui7890'
     Authorization:
       name: Authorization
       in: header
@@ -668,6 +708,7 @@ components:
       required: false
       schema:
         type: string
+      example: 'SlAV32hkKG'
     Digest:
       name: Digest
       in: header
@@ -675,6 +716,7 @@ components:
       required: false
       schema:
         type: string
+      example: 'SHA- 256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A='
     Signature:
       name: Signature
       in: header
@@ -682,6 +724,7 @@ components:
       required: false
       schema:
         type: string
+        example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE",algorithm="rsa-sha256",headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date",signature="Base64(RSA-SHA256(signing string))"'
     TPP-Signature-Certificate:
       name: TPP-Signature-Certificate
       in: header
@@ -689,10 +732,12 @@ components:
       required: false
       schema:
         type: string
+      example: 'VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU='
     dateFrom:
       name: dateFrom
       in: query
       description: 'Starting date (inclusive the date dateFrom) of the transaction list, mandated if no delta access is required'
+      example: '2017-10-30'
       required: false
       schema:
         type: string
@@ -702,6 +747,7 @@ components:
       in: query
       description: 'End date (inclusive the data dateTo) of the transaction list, default is now if not given.'
       required: false
+      example: '2017-10-30'
       schema:
         type: string
         format: date
@@ -719,6 +765,7 @@ components:
       required: true
       schema:
         type: string
+      example: 'booked'
     PSU-ID:
       name: PSU-ID
       in: header
@@ -726,6 +773,7 @@ components:
       required: false
       schema:
         type: string
+      example: 'PSU-1234'
     PSU-ID-Type:
       name: PSU-ID-Type
       in: header
@@ -754,6 +802,7 @@ components:
       required: true
       schema:
         type: string
+      example: '172.25.77.8'
     deltaList:
       name: deltaList
       in: query
@@ -792,6 +841,7 @@ components:
           - xml
           - JSON
           - text
+        example: JSON
   # Security scheme definition (see Authentication)
   securitySchemes:
     ApiKeyAuth:
@@ -808,41 +858,24 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TppMessage'
-          example:
-            category: Error
-            code: '400'
-            text: Validation error occured.
     '401Unauthorized':
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TppMessage'
-          example:
-            category: Error
-            code: '401'
-            text: Unauthorized
     '403Forbidden':
       description: Forbidden
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TppMessage'
-          example:
-            category: Error
-            code: '403'
-            text: TPP role as defined in the certificate is not matching a payment initiation.
     '500InternalServerError':
       description: Internal Server Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TppMessage'
-          example:
-            category: Error
-            code: '500'
-            text: Internal Server Error
-          
   # Reusable response headers
   headers:
     Content-Type:
@@ -853,17 +886,20 @@ components:
           - application/json
           - application/xml
           - application/text
+        example: 'application/json'
       description: 'Possible values are application/json, application/xml or application/text'
     Location:
       required: true
       schema:
         type: string
       description: 'Location of the created resource.'
+      example: 'https://www.testbank.com/psd2/v1/payments/sepa-credit-transfers/1234-wertiq-983'
     X-Request-ID:
       required: true
       schema:
         type: string
         format: UUID
+        example: '123e4567-e89b-12d3-a456-426655440000'
       description: 'ID of the request, unique to the call, as determined by the initiating party.'
     ASPSP-SCA-Approach:
       required: false
@@ -873,6 +909,7 @@ components:
           - EMBEDDED
           - DECOUPLED
           - REDIRECT
+        example: 'DECOUPLED'
       description: 'Possible values are: EMBEDDED / DECOUPLED / REDIRECT. OAuth will be subsumed by the value REDIRECT'
   # Reusable examples
   #examples:
@@ -1555,6 +1592,15 @@ paths:
         - $ref: "#/components/parameters/TPP-Signature-Certificate"
       security:
         - APIKeyQueryParam: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+          application/xml:
+            schema:
+              type: object
       responses:
         '200':
           description: OK
@@ -1666,9 +1712,12 @@ paths:
       security:
         - APIKeyQueryParam: []
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
+            schema:
+              type: object
+          application/xml:
             schema:
               type: object
       responses:
