@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 0.0.1
   title: OpenPSD PSD2 
   description: |
     PSD2 API based on the Berlin Group specs
@@ -24,6 +24,9 @@ servers:
 components:
   # Reusable schemas (data models)
   schemas:
+    consentId:
+      type: string
+      description: 'Identification of the consent resource as it is used in the API structure. Shall be contained, if a consent resource was generated.'
     frequency:
       type: string
       enum:
@@ -156,19 +159,24 @@ components:
         balances:
           type: array
           items:
-            $ref: '#/components/schemas/Balance'
+            $ref: '#/components/schemas/AccountReference'
           description: Is asking for balances of the addressed accounts. If the array is empty, the TPP is asking for the balances of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue
         transactions:
           type: array
           items:
-            $ref: '#/components/schemas/Transaction'
+            $ref: '#/components/schemas/AccountReference'
           description: Is asking for transactions of the addressed accounts. If the array is empty, the TPP is asking for the transactions of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue
         availableAccounts:
           type: string
-          description: Only the values "allAccounts" or "allAccountsWithBalances" is admitted.
+          enum:
+            - allAccounts
+            - allAccountsWithBalances
+          description: 'Optional if supported by API provide. Only the values "allAccounts" or "allAccountsWithBalances" is admitted.'
         allPsd2:
           type: string
-          description: Only the value "allAccounts" is admitted.
+          enum:
+            - allAccounts
+          description: 'Optional if supported by API provide. Only the value "allAccounts" is admitted.'
     AccountDetails:
       type: object
       required:
@@ -470,6 +478,12 @@ components:
       description: '"true" if the consent is for recurring access to the account data "false", if the consent is for one access to the account data'
     consentsRequest:
       type: object
+      required:
+        - access
+        - recurringIndicator
+        - validUntil
+        - frequencyPerDay
+        - combinedServiceIndicator
       properties:
         access:
           $ref: '#/components/schemas/AccountAccess'
@@ -1007,38 +1021,6 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   '/consents':
-    get:
-      tags:
-        - Consent
-      summary: Consent resource
-      description: Creates an account information consent resource at the ASPSP regarding access to accounts specified in this request.
-      operationId: getConsents
-      security:
-        - APIKeyQueryParam: []
-      parameters:
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
-        - $ref: "#/components/parameters/TPP-Redirect-URI"
-        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
     post:
       tags:
         - Consent
@@ -1079,24 +1061,26 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - consentStatus
+                  - _links
                 properties:
                   consentStatus:
                     $ref: '#/components/schemas/ConsentStatus'
                   consentId:
-                    type: string
-                  sca_methods:
+                    $ref: '#/components/schemas/consentId'
+                  scaMethods:
                     type: array
                     items:
                       $ref: '#/components/schemas/Authentication'
-                  chosen_sca_method:
+                  chosenSca Method:
                     $ref: '#/components/schemas/Authentication'
-                  sca_challenge_data:
+                  challengeData:
                     $ref: '#/components/schemas/Challenge'
                   _links:
                     $ref: '#/components/schemas/Links'
-                  psu_text:
-                    type: string
-                    description: 'Text to be displayed to the PSU, e.g. in a Decoupled SCA Approach'
+                  psuMessage:
+                    $ref: '#/components/schemas/psuMessage'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
