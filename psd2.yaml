@@ -785,13 +785,13 @@ components:
       required: true
       schema:
         type: string
-      description: Location of the created resource.
+      description: 'Location of the created resource.'
     X-Request-ID:
       required: true
       schema:
         type: string
         format: UUID
-      description: ID of the request, unique to the call, as determined by the initiating party.
+      description: 'ID of the request, unique to the call, as determined by the initiating party.'
     ASPSP-SCA-Approach:
       required: false
       schema:
@@ -800,6 +800,7 @@ components:
           - EMBEDDED
           - DECOUPLED
           - REDIRECT
+      description: 'Possible values are: EMBEDDED / DECOUPLED / REDIRECT. OAuth will be subsumed by the value REDIRECT'
   # Reusable examples
   #examples:
   # Reusable links
