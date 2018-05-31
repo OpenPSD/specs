@@ -927,9 +927,9 @@ paths:
     get:
       tags:
         - account
-      summary: Account resource
+      summary: account details
       description: 'Reads a list of bank accounts, with balances where required. It is assumed that a consent of the PSU to this access is already given and stored on the ASPSP system. The addressed list of accounts depends then on the PSU ID and the stored consent addressed by consentId, respectively the OAuth2 access token.'
-      operationId: getAccount
+      operationId: getAccountbyId
       parameters:
         - $ref: "#/components/parameters/account-id"
         - $ref: "#/components/parameters/X-Request-ID"
@@ -968,7 +968,7 @@ paths:
     get:
       tags:
         - account
-      summary: Account resource
+      summary: balances for account
       description: Reads the balance list for a given account.
       operationId: getBalanceForAccountByAccountId
       parameters:
@@ -1012,7 +1012,7 @@ paths:
     get:
       tags:
         - account
-      summary: Account resource
+      summary: transactions for account
       description: 'Reads a transaction list For a given account, additional parameters are e.g. the attributes “date_from” and “date_to”. If the attribute “withbalance” is used, the ASPSP will add balances to the transaction list. The latter might be provided by the ASPSP anyhow, if transaction lists without balances are not supported.'
       operationId: getTransactionsForAccountByAccountId
       parameters:
@@ -1069,7 +1069,7 @@ paths:
     get:
       tags:
         - account
-      summary: Account resource
+      summary: transaction details for transaction of an account
       description: Reads transaction details of an addressed transaction.
       operationId: getTransactionByTransactionIdForAccountByAccountId
       parameters:
@@ -1108,9 +1108,9 @@ paths:
     post:
       tags:
         - Consent
-      summary: Consent resource
+      summary: create a consent
       description: 'Creates a consent resource, defining access rights to dedicated accounts of a given PSU-ID. These accounts must be addressed explicitly in the method as parameters.'
-      operationId: postConsent
+      operationId: createConsent
       parameters:
         - $ref: "#/components/parameters/X-Request-ID"
         - $ref: "#/components/parameters/PSU-ID"
@@ -1177,7 +1177,8 @@ paths:
     get:
       tags:
         - Consent
-      summary: Consent resource
+      summary: get consent details
+      operationId: getConsent
       description: 'Reads the exact definition of the given consent resource {consentId}'
       parameters:
         - $ref: '#/components/parameters/consentId'
@@ -1233,7 +1234,8 @@ paths:
     put:
       tags:
         - Consent
-      summary: Consent resource
+      summary: update consent
+      operationId: updateConsent
       description: 'Updates data on the consent resource, authorises a consent within the Embedded SCA Approach where needed.'
       parameters:
         - $ref: "#/components/parameters/consentId"
@@ -1300,9 +1302,9 @@ paths:
     delete:
       tags:
         - Consent
-      summary: Consent resource
+      summary: delete consent
       description: Deletes a created consent with ID.
-      operationId: deleteConsentWithID
+      operationId: deleteConsent
       parameters:
         - $ref: "#/components/parameters/consentId"
         - $ref: "#/components/parameters/Authorization"
@@ -1324,7 +1326,8 @@ paths:
     get:
       tags:
         - Consent
-      summary: Consent resource
+      summary: get status of a consent
+      operationId: getStatusForConsentById
       description: Reads the transaction status of the addressed consent resource.
       parameters:
         - $ref: '#/components/parameters/consentId'
@@ -1359,12 +1362,13 @@ paths:
           $ref: '#/components/responses/403Forbidden'
         '500':
           $ref: '#/components/responses/500InternalServerError'
-  '/{payment-service}/{payment-product}':
+  '/{payment-service}/{payment-product}/{paymentId}':
     put:
       tags:
         - payments
-      summary: Payment resource
-      description: Updates data on the payment resource if needed. It may authorise a payment within the Embedded SCA Approach where needed.
+      summary: update payment 
+      operationId: updatePayment
+      description: 'Updates data on the payment resource if needed. It may authorise a payment within the Embedded SCA Approach where needed.'
       parameters:
         - $ref: '#/components/parameters/payment-service'
         - $ref: '#/components/parameters/payment-product'
@@ -1434,7 +1438,8 @@ paths:
     get:
       tags:
         - payments
-      summary: Payment resource
+      summary: get payment details
+      operationId: getPayment
       description: Reads the details of an initiated payment.
       parameters:
         - $ref: '#/components/parameters/payment-service'
@@ -1486,7 +1491,8 @@ paths:
     get:
       tags:
         - payments
-      summary: Payment resource
+      summary: get the status of a payment
+      operationId: getPaymentStatus
       description: Reads the transaction status of the payment
       parameters:
         - $ref: '#/components/parameters/payment-service'
@@ -1526,9 +1532,9 @@ paths:
     post:
       tags:
         - payments
-      summary: Payment resource
+      summary: create a single payment
       description: 'Creates a payment initiation resource addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      operationId: postPaymentsWithPaymentProduct
+      operationId: createSinglePayment
       parameters:
         - $ref: '#/components/parameters/payment-service'
         - $ref: '#/components/parameters/payment-product'
@@ -1637,9 +1643,9 @@ paths:
     post:
       tags:
         - payments
-      summary: Payment resource
+      summary: create a bulk payment
+      operationId: createBulkPayment
       description: 'Creates a payment initiation resource addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      operationId: Creates a bulk payment initiation request at the ASPSP
       parameters:
         - $ref: '#/components/parameters/payment-product'
         - $ref: '#/components/parameters/Content-Type'
@@ -1720,9 +1726,9 @@ paths:
     post:
       tags:
         - payments
-      summary: Payment resource
+      summary: create a periodic payment
+      operationId: createPeriodicPayment
       description: 'Creates a payment initiation resource addressable under {paymentID} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      operationId: Creates a periodic payment initiation request at the ASPSP
       parameters:
         - $ref: '#/components/parameters/payment-product'
         - $ref: '#/components/parameters/Content-Type'
@@ -1851,7 +1857,8 @@ paths:
     post:
       tags:
         - Funds
-      summary: Funds resource
+      summary: check funds
+      operationId: createFundsConfirmationRequest
       description: 'Checks whether funds are available for a payment transaction on an account linked with a given tuple cardissuer/cardnumber, or an IBAN and TPP respectively'
       security:
         - APIKeyQueryParam: []
