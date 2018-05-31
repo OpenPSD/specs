@@ -90,6 +90,7 @@ components:
       properties:
         street:
           type: string
+          maxLength: 70
         buildingNumber:
           type: string
         city:
@@ -155,17 +156,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AccountReference'
-          description: Is asking for detailed account information. If the array is empty, the TPP is asking for an accessible account list. This may be restricted in a PSU/ASPSP authorization dialogue.
+          description: 'Is asking for detailed account information. If the array is empty, the TPP is asking for an accessible account list. This may be restricted in a PSU/ASPSP authorization dialogue.'
         balances:
           type: array
           items:
             $ref: '#/components/schemas/AccountReference'
-          description: Is asking for balances of the addressed accounts. If the array is empty, the TPP is asking for the balances of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue
+          description: 'Is asking for balances of the addressed accounts. If the array is empty, the TPP is asking for the balances of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue'
         transactions:
           type: array
           items:
             $ref: '#/components/schemas/AccountReference'
-          description: Is asking for transactions of the addressed accounts. If the array is empty, the TPP is asking for the transactions of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue
+          description: 'Is asking for transactions of the addressed accounts. If the array is empty, the TPP is asking for the transactions of all accessible account lists. This may be restricted in a PSU/ASPSP authorization dialogue'
         availableAccounts:
           type: string
           enum:
@@ -835,6 +836,8 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - accounts
                 properties:
                   accounts:
                     type: array
@@ -854,7 +857,7 @@ paths:
         - account
       summary: Account resource
       description: 'Reads a list of bank accounts, with balances where required. It is assumed that a consent of the PSU to this access is already given and stored on the ASPSP system. The addressed list of accounts depends then on the PSU ID and the stored consent addressed by consentId, respectively the OAuth2 access token.'
-      operationId: queryAccounts
+      operationId: getAccount
       parameters:
         - $ref: "#/components/parameters/account-id"
         - $ref: "#/components/parameters/X-Request-ID"
@@ -875,7 +878,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountDetails'
+                type: object
+                required:
+                  - account
+                properties:
+                  account:
+                    $ref: '#/components/schemas/AccountDetails'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -911,6 +919,8 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - balances
                 properties:
                   account:
                     $ref: '#/components/schemas/AccountReference'
@@ -946,6 +956,7 @@ paths:
         - $ref: '#/components/parameters/entryReferenceFrom'
         - $ref: '#/components/parameters/bookingStatus'
         - $ref: '#/components/parameters/deltaList'
+        - $ref: '#/components/parameters/Accept'
       security:
         - APIKeyQueryParam: []
       responses:
@@ -1277,6 +1288,169 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
   '/{payment-service}/{payment-product}':
+    put:
+      tags:
+        - payments
+      summary: Payment resource
+      description: Updates data on the payment resource if needed. It may authorise a payment within the Embedded SCA Approach where needed.
+      parameters:
+        - $ref: '#/components/parameters/payment-service'
+        - $ref: '#/components/parameters/payment-product'
+        - $ref: '#/components/parameters/paymentId'
+        - $ref: "#/components/parameters/X-Request-ID"
+        - $ref: "#/components/parameters/PSU-ID"
+        - $ref: "#/components/parameters/PSU-ID-Type"
+        - $ref: "#/components/parameters/PSU-Corporate-ID"
+        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Signature"
+        - $ref: "#/components/parameters/TPP-Signature-Certificate"
+      security:
+        - APIKeyQueryParam: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                psuData:
+                  $ref: '#/components/schemas/PSUData'
+                authenticationMethodId:
+                  type: string
+                scaAuthenticationData:
+                  type: string
+      responses:
+        '201':
+          description: OK result with Decoupled Approach
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transactionStatus
+                properties:
+                  chosenScaMethod:
+                    $ref: '#/components/schemas/Authentication'
+                  challengeData:
+                    $ref: '#/components/schemas/Challenge'
+                  scaMethods:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Authentication'
+                  _links:
+                    $ref: '#/components/schemas/Links'
+                  transactionStatus:
+                    $ref: '#/components/schemas/TransactionStatus'
+                  consentStatus:
+                    $ref: '#/components/schemas/ConsentStatus'
+                  psuMessage:
+                    $ref: '#/components/schemas/psuMessage'
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            ASPSP-SCA-Approach:
+              $ref: '#/components/headers/ASPSP-SCA-Approach'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+    get:
+      tags:
+        - payments
+      summary: Payment resource
+      description: Reads the details of an initiated payment.
+      parameters:
+        - $ref: '#/components/parameters/payment-service'
+        - $ref: '#/components/parameters/payment-product'
+        - $ref: '#/components/parameters/paymentId'
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: "#/components/parameters/X-Request-ID"
+        - $ref: "#/components/parameters/PSU-ID"
+        - $ref: "#/components/parameters/PSU-ID-Type"
+        - $ref: "#/components/parameters/PSU-Corporate-ID"
+        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/Authorization"
+        - $ref: "#/components/parameters/Consent-ID"
+        - $ref: "#/components/parameters/PSU-IP-Address"
+        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
+        - $ref: "#/components/parameters/TPP-Redirect-URI"
+        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Signature"
+        - $ref: "#/components/parameters/TPP-Signature-Certificate"
+      security:
+        - APIKeyQueryParam: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            application/xml:
+              schema:
+                type: object
+          headers:
+            Location:
+              $ref: '#/components/headers/Location'
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            ASPSP-SCA-Approach:
+              $ref: '#/components/headers/ASPSP-SCA-Approach'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  '/{payment-service}/{payment-product}/{paymentId}/status':
+    get:
+      tags:
+        - payments
+      summary: Payment resource
+      description: Reads the transaction status of the payment
+      parameters:
+        - $ref: '#/components/parameters/payment-service'
+        - $ref: '#/components/parameters/payment-product'
+        - $ref: '#/components/parameters/paymentId'
+        - $ref: "#/components/parameters/X-Request-ID"
+        - $ref: "#/components/parameters/Authorization"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Signature"
+        - $ref: "#/components/parameters/TPP-Signature-Certificate"
+      security:
+        - APIKeyQueryParam: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionStatus:
+                    $ref: '#/components/schemas/TransactionStatus'
+                  scaStatus:
+                    $ref: '#/components/schemas/scaStatus'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+  '/payments/{payment-product}':
     post:
       tags:
         - payments
@@ -1379,166 +1553,6 @@ paths:
               $ref: '#/components/headers/X-Request-ID'
             ASPSP-SCA-Approach:
               $ref: '#/components/headers/ASPSP-SCA-Approach'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-  '/payments/{payment-product}/{paymentId}':
-    put:
-      tags:
-        - payments
-      summary: Payment resource
-      description: Updates data on the payment resource if needed. It may authorise a payment within the Embedded SCA Approach where needed.
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/paymentId'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - APIKeyQueryParam: []
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                psuData:
-                  $ref: '#/components/schemas/PSUData'
-                authenticationMethodId:
-                  type: string
-                scaAuthenticationData:
-                  type: string
-      responses:
-        '201':
-          description: OK result with Decoupled Approach
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                properties:
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  consentStatus:
-                    $ref: '#/components/schemas/ConsentStatus'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-          headers:
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-            ASPSP-SCA-Approach:
-              $ref: '#/components/headers/ASPSP-SCA-Approach'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-    get:
-      tags:
-        - payments
-      summary: Payment resource
-      description: Reads the details of an initiated payment.
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/paymentId'
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/Consent-ID"
-        - $ref: "#/components/parameters/PSU-IP-Address"
-        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
-        - $ref: "#/components/parameters/TPP-Redirect-URI"
-        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - APIKeyQueryParam: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-            application/xml:
-              schema:
-                type: object
-          headers:
-            Location:
-              $ref: '#/components/headers/Location'
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-            ASPSP-SCA-Approach:
-              $ref: '#/components/headers/ASPSP-SCA-Approach'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-  '/payments/{payment-product}/{paymentId}/status':
-    get:
-      tags:
-        - payments
-      summary: Payment resource
-      description: Reads the transaction status of the payment
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/paymentId'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - APIKeyQueryParam: []
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  scaStatus:
-                    $ref: '#/components/schemas/scaStatus'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -1775,6 +1789,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - account
+                - instructedAmount
               properties:
                 cardNumber:
                   type: string
