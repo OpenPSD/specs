@@ -1168,7 +1168,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PSUData'
+              type: object
+              properties:
+                psuData:
+                  $ref: '#/components/schemas/PSUData'
+                authenticationMethodId:
+                  type: string
+                scaAuthenticationData:
+                  type: string
       responses:
         '201':
           description: OK
@@ -1181,8 +1188,6 @@ paths:
             application/json:
               schema:
                 type: object
-                required:
-                  - transaction_status
                 properties:
                   chosenScaMethod:
                     $ref: '#/components/schemas/Authentication'
@@ -1400,6 +1405,19 @@ paths:
         - $ref: "#/components/parameters/TPP-Signature-Certificate"
       security:
         - APIKeyQueryParam: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                psuData:
+                  $ref: '#/components/schemas/PSUData'
+                authenticationMethodId:
+                  type: string
+                scaAuthenticationData:
+                  type: string
       responses:
         '201':
           description: OK result with Decoupled Approach
@@ -1410,8 +1428,20 @@ paths:
                 required:
                   - transactionStatus
                 properties:
+                  chosenScaMethod:
+                    $ref: '#/components/schemas/Authentication'
+                  challengeData:
+                    $ref: '#/components/schemas/Challenge'
+                  scaMethods:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Authentication'
+                  _links:
+                    $ref: '#/components/schemas/Links'
                   transactionStatus:
                     $ref: '#/components/schemas/TransactionStatus'
+                  consentStatus:
+                    $ref: '#/components/schemas/ConsentStatus'
                   psuMessage:
                     $ref: '#/components/schemas/psuMessage'
           headers:
