@@ -1390,8 +1390,14 @@ paths:
       parameters:
         - $ref: '#/components/parameters/payment-product'
         - $ref: '#/components/parameters/paymentId'
-        - $ref: '#/components/parameters/X-Request-ID'
-        - $ref: '#/components/parameters/PSU-ID'
+        - $ref: "#/components/parameters/X-Request-ID"
+        - $ref: "#/components/parameters/PSU-ID"
+        - $ref: "#/components/parameters/PSU-ID-Type"
+        - $ref: "#/components/parameters/PSU-Corporate-ID"
+        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Signature"
+        - $ref: "#/components/parameters/TPP-Signature-Certificate"
       security:
         - APIKeyQueryParam: []
       responses:
