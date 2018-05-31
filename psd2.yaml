@@ -42,16 +42,20 @@ components:
       type: boolean
     scaStatus:
       type: string
+      description: 'This data element is containing information about the status of the SCA method applied. This is free text but might be coded in a future version of the specification.'
     psuMessage:
       type: string
+      description: 'Text to be displayed to the PSU'
     paymentId:
       type: string
+      description: 'resource identification of the generated payment initiation resource.'
     HrefType:
       type: string
     Authorization:
       type: string
     ConsentStatus:
       type: string
+      description: 'authentication status of the consent'
     Currency:
       type: string
       description: ISO 4217 Alpha 3 currency code
@@ -362,7 +366,7 @@ components:
       properties:
         scaRedirect:
           $ref: '#/components/schemas/HrefType'
-          description: A link to an ASPSP site where SCA is performed within the Redirect SCA approach.
+          description: 'A link to an ASPSP site where SCA is performed within the Redirect SCA approach.'
         scaOAuth:
           $ref: '#/components/schemas/HrefType'
           description: The link refers to a JSON document specifying the OAuth details of the ASPSP’s authorisation server. JSON document follows the definition given in https://tools.ietf.org/html/draft-ietf-oauth- discovery.
@@ -416,6 +420,9 @@ components:
           description: Download link for huge AIS data packages.
     Authentication:
       type: object
+      required:
+        - authenticationType
+        - authenticationMethodId
       properties:
         authenticationType:
           type: string
@@ -426,17 +433,17 @@ components:
             - PUSH_OTP
         authenticationVersion:
           type: string
-          description: Depending on the "authenticationType". This version can be used by differentiating authentication tools used within performing OTP generation in the same authentication type. This version can be referred to in the ASPSP’s documentation.
+          description: 'Depending on the "authenticationType". This version can be used by differentiating authentication tools used within performing OTP generation in the same authentication type. This version can be referred to in the ASPSP’s documentation.'
         authenticationMethodId:
           type: string
           maxLength: 35
-          description: An identification provided by the ASPSP for the later identification of the authentication method selection.
+          description: 'An identification provided by the ASPSP for the later identification of the authentication method selection.'
         name:
           type: string
           description: 'This is the name of the authentication method defined by the PSU in the Online Banking frontend of the ASPSP. Alternatively this could be a description provided by the ASPSP like “SMS OTP on phone +49160 xxxxx 28”. This name shall be used by the TPP when presenting a list of authentication methods to the PSU, if available.'
         explanation:
           type: string
-          description: detailed information about the sca method for the PSU.
+          description: 'detailed information about the sca method for the PSU.'
     Challenge:
       type: object
       properties:
@@ -445,22 +452,63 @@ components:
           description: 'PNG data (max. 512 kilobyte) to be displayed to the PSU, Base64 encoding. This attribute is used only, when PHOTO_OTP or CHIP_OTP is the selected SCA method.'
         data:
           type: string
-          description: String challenge data
+          description: 'String challenge data'
         imageLink:
           type: string
-          description: A link where the ASPSP will provides the challenge image for the TPP.
+          description: 'A link where the ASPSP will provides the challenge image for the TPP.'
         otpMaxLength:
           type: integer
-          description: The maximal length for the OTP to be typed in by the PSU.
+          description: 'The maximal length for the OTP to be typed in by the PSU.'
         otpFormat:
           type: string
-          description: The format type of the OTP to be typed in. The admitted values are “characters” or “integer”.
+          description: 'The format type of the OTP to be typed in. The admitted values are “characters” or “integer”.'
           enum:
             - characters
             - integer
         additionalInformation:
           type: string
-          description: Additional explanation for the PSU to explain e.g. fallback mechanism for the chosen sca method
+          description: 'Additional explanation for the PSU to explain e.g. fallback mechanism for the chosen sca method'
+    MessageCode:
+      type: string
+      enum:
+        # ServiceUnspecificHTTPErrorCodes 
+        - CERTIFICATE_INVALID
+        - CERTIFICATE_EXPIRED
+        - CERTIFICATE_BLOCKED
+        - CERTIFICATE_REVOKED
+        - CERTIFICATE_MISSING
+        - SIGNATURE_INVALID
+        - SIGNATURE_MISSING
+        - FORMAT_ERROR
+        - PARAMETER_NOT_SUPPORTED
+        - PSU_CREDENTIALS_INVALID
+        - SERVICE_INVALID
+        - SERVICE_BLOCKED
+        - CORPORATE_ID_INVALID
+        - CONSENT_UNKNOWN
+        - CONSENT_INVALID
+        - CONSENT_EXPIRED
+        - TOKEN_UNKNOWN
+        - TOKEN_INVALID
+        - TOKEN_EXPIRED
+        - RESOURCE_UNKNOWN
+        - RESOURCE_EXPIRED
+        - TIMESTAMP_INVALID
+        - PERIOD_INVALID
+        - SCA_METHOD_UNKNOWN
+        # PISSpecificHTTPErrorCodes
+        - PRODUCT_INVALID
+        - PRODUCT_UNKNOWN
+        - PAYMENT_FAILED
+        - REQUIRED_KID_MISSING
+        - EXECUTION_DATE_INVALID
+        # AISSpecificHTTPErrorCodes
+        - SESSIONS_NOT_SUPPORTED
+        - ACCESS_EXCEEDED
+        - REQUESTED_FORMATS_INVALID
+        # PIISSpecificErrorCodes
+        - CARD_INVALID
+        - NO_PIIS_ACTIVATION
     TppMessage:
       type: object
       required:
@@ -471,9 +519,12 @@ components:
         category:
           type: string
         code:
-          type: string
+          $ref: '#/components/schemas/MessageCode'
         text:
-          type: string 
+          type: string
+          maxLength: 512
+        path:
+          type: string
     recurringIndicator:
       type: boolean
       description: '"true" if the consent is for recurring access to the account data "false", if the consent is for one access to the account data'
