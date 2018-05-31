@@ -611,7 +611,7 @@ components:
           - application/json
           - application/xml
           - application/text
-        example: 'application/json'
+      example: 'application/json'
     account-id:
       name: account-id
       in: path
@@ -708,7 +708,7 @@ components:
       required: false
       schema:
         type: string
-      example: 'SlAV32hkKG'
+      example: 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ'
     Digest:
       name: Digest
       in: header
@@ -716,7 +716,7 @@ components:
       required: false
       schema:
         type: string
-      example: 'SHA- 256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A='
+      example: 'SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A='
     Signature:
       name: Signature
       in: header
@@ -724,7 +724,7 @@ components:
       required: false
       schema:
         type: string
-        example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE",algorithm="rsa-sha256",headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date",signature="Base64(RSA-SHA256(signing string))"'
+      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE",algorithm="rsa-sha256",headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date",signature="Base64(RSA-SHA256(signing string))"'
     TPP-Signature-Certificate:
       name: TPP-Signature-Certificate
       in: header
@@ -841,7 +841,7 @@ components:
           - xml
           - JSON
           - text
-        example: JSON
+      example: JSON
   # Security scheme definition (see Authentication)
   securitySchemes:
     ApiKeyAuth:
