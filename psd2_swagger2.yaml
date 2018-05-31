@@ -912,41 +912,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "GET",
-              "uri": "/{payment-service}/{payment-product}/{paymentId}",
-              "headers": {
-                "Content-Type": "application/json",
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "PSU-ID": "PSU-1234",
-                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ",
-                "Consent-ID": "qwer3456tzui7890",
-                "PSU-IP-Address": "172.25.77.8",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "Location": "https://www.testbank.com/psd2/v1/payments/sepa-credit-transfers/1234-wertiq-983",
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "ASPSP-SCA-Approach": "DECOUPLED"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test get payment details",
-            "x-testDescription": "Reads the details of an initiated payment."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -1129,36 +1095,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "PUT",
-              "uri": "/{payment-service}/{payment-product}/{paymentId}",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "PSU-ID": "PSU-1234",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "ASPSP-SCA-Approach": "DECOUPLED"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test update payment",
-            "x-testDescription": "Updates data on the payment resource if needed. It may authorise a payment within the Embedded SCA Approach where needed."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -1313,35 +1250,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "GET",
-              "uri": "/{payment-service}/{payment-product}/{paymentId}/status",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test get the status of a payment",
-            "x-testDescription": "Reads the transaction status of the payment"
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -1658,38 +1567,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "POST",
-              "uri": "/consents",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "PSU-ID": "PSU-1234",
-                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "Location": "https://www.testbank.com/psd2/v1/payments/sepa-credit-transfers/1234-wertiq-983",
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "ASPSP-SCA-Approach": "DECOUPLED"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test create a consent",
-            "x-testDescription": "Creates a consent resource, defining access rights to dedicated accounts of a given PSU-ID. These accounts must be addressed explicitly in the method as parameters."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -1780,34 +1658,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "GET",
-              "uri": "/consents/qwer3456tzui7890",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test get consent details",
-            "x-testDescription": "Reads the exact definition of the given consent resource {consentId}"
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -1933,36 +1784,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "PUT",
-              "uri": "/consents/qwer3456tzui7890",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "PSU-ID": "PSU-1234",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "ASPSP-SCA-Approach": "DECOUPLED"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test update consent",
-            "x-testDescription": "Updates data on the consent resource, authorises a consent within the Embedded SCA Approach where needed."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -2033,30 +1855,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "DELETE",
-              "uri": "/consents/qwer3456tzui7890",
-              "headers": {
-                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ",
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {}
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test delete consent",
-            "x-testDescription": "Deletes a created consent with ID."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -2492,36 +2291,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "GET",
-              "uri": "/accounts",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "Consent-ID": "qwer3456tzui7890",
-                "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiZmRhYWU1ODYtYWE1NS00MzJjLTQxODEtYjRiYzY2MDljNzQ2IiwiZXhwIjoxNTU4NTMyMTI0LCJvd25lciI6IjViMDQxYzljNDVmOTJlMGExNzdlOThjYyJ9.uif9dlFO8qEQGrLh9bThtT4H_sUeL43nfx0PL-RTgd5KL9WaO5TADLPIgBu02h2I39jRRb978ZYiv2xseAK8xpR13vz8cQUjIX0FpLnrKomfvl_nyzefVkcUH_DrNGkcPZswoVNFbfeUWER1c8I0fUudVsnxHExRJ_S-Lq1vWCSDChy89Vm_bliYdt8DppyELaBadFPqxeRRkn-szpr8sAvDgbb-OccT3LsiylkqJ5g4BWqj9qLpBO4xkzSTLjdKvgipRcNwv_dKOcwF3OI90TAaX1aEm856Zg1hBLrYnae1oceBfRYl7rjtDQo3S_R0j5pLhb7Kd-ErHec6nyaoOQ",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test list of accounts",
-            "x-testDescription": "Reads a list of bank accounts, with balances where required. It is assumed that a consent of the PSU to this access is already given and stored on the ASPSP system. The addressed list of accounts depends then on the PSU ID and the stored consent addressed by consentId, respectively the OAuth2 access token."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -2614,35 +2384,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "POST",
-              "uri": "/funds-confirmations",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "Location": "https://www.testbank.com/psd2/v1/payments/sepa-credit-transfers/1234-wertiq-983",
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test check funds",
-            "x-testDescription": "Checks whether funds are available for a payment transaction on an account linked with a given tuple cardissuer/cardnumber, or an IBAN and TPP respectively"
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
@@ -2733,34 +2475,7 @@
             }
           }
         },
-        "x-unitTests": [
-          {
-            "request": {
-              "method": "GET",
-              "uri": "/consents/qwer3456tzui7890/status",
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000",
-                "Digest": "SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=",
-                "Signature": "keyId=\"SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE\",algorithm=\"rsa-sha256\",headers=\"Digest X-Request-ID PSU-ID TPP-Redirect-URI Date\",signature=\"Base64(RSA-SHA256(signing string))\"",
-                "TPP-Signature-Certificate": "VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU="
-              }
-            },
-            "expectedResponse": {
-              "x-allowExtraHeaders": true,
-              "x-bodyMatchMode": "NONE",
-              "x-arrayOrderedMatching": false,
-              "x-arrayCheckCount": false,
-              "x-matchResponseSchema": true,
-              "headers": {
-                "X-Request-ID": "123e4567-e89b-12d3-a456-426655440000"
-              }
-            },
-            "x-testShouldPass": true,
-            "x-testEnabled": true,
-            "x-testName": "Test get status of a consent",
-            "x-testDescription": "Reads the transaction status of the addressed consent resource."
-          }
-        ],
+        "x-unitTests": [],
         "x-operation-settings": {
           "CollectParameters": false,
           "AllowDynamicQueryParameters": false,
