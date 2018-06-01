@@ -8,10 +8,10 @@ info:
     name: OpenPSD
     email: webmaster@openpsd.org
     url: http://openpsd.org
-  termsOfService: http://openpsd.org/terms/
+  termsOfService: http://openpsd.org/
   license:
-    name: GNU General Public License
-    url: https://www.gnu.org/licenses/gpl-3.0.html
+    name: Berlin Group specification is published under the Creative Commons Attribution-NoDerivatives 4.0 International Public License
+    url: https://creativecommons.org/licenses/by-nd/4.0/
 servers:
   - url: '{protocol}://api.openpsd.org/psd2/v1'
     variables:
