@@ -77,6 +77,7 @@ components:
       example: 'received'
     Currency:
       type: string
+      pattern: '^[A-Z]{3}$'
       description: ISO 4217 Alpha 3 currency code
       maxLength: 3
       example: 'EUR'
@@ -253,6 +254,7 @@ components:
           description: ExternalCashAccountType1Code from ISO 20022
         bic:
           type: string
+          pattern: '([a-zA-Z]{4})([a-zA-Z]{2})(([2-9a-zA-Z]{1})([0-9a-np-zA-NP-Z]{1}))((([0-9a-wy-zA-WY-Z]{1})([0-9a-zA-Z]{2}))|([xX]{3})|)'
           description: The BIC associated to the account.
           format: bicfi
         linkedAccounts:
@@ -582,7 +584,7 @@ components:
     recurringIndicator:
       type: boolean
       description: '"true" if the consent is for recurring access to the account data "false", if the consent is for one access to the account data'
-    consentsRequest:
+    CreateConsentsRequest:
       type: object
       required:
         - access
@@ -607,6 +609,28 @@ components:
         combinedServiceIndicator:
           type: boolean
           description: 'If "true" indicates that a payment initiation service will be addressed in the same "session", cp. Section 8.'
+    CreateConsentsResponse:
+      type: object
+      required:
+        - consentStatus
+        - _links
+      properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        consentId:
+          $ref: '#/components/schemas/consentId'
+        scaMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Authentication'
+        chosenScaMethod:
+          $ref: '#/components/schemas/Authentication'
+        challengeData:
+          $ref: '#/components/schemas/Challenge'
+        _links:
+          $ref: '#/components/schemas/Links'
+        psuMessage:
+          $ref: '#/components/schemas/psuMessage'
     SinglePaymentInitiationRequest:
       type: object
     BulkPaymentInitiationRequest:
@@ -1420,6 +1444,16 @@ paths:
         - $ref: "#/components/parameters/PSU-ID-Type"
         - $ref: "#/components/parameters/PSU-Corporate-ID"
         - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/PSU-IP-Address"
+        - $ref: "#/components/parameters/PSU-IP-Port"
+        - $ref: "#/components/parameters/PSU-Accept"
+        - $ref: "#/components/parameters/PSU-Accept-Charset"
+        - $ref: "#/components/parameters/PSU-Accept-Encoding"
+        - $ref: "#/components/parameters/PSU-Accept-Language"
+        - $ref: "#/components/parameters/PSU-User-Agent"
+        - $ref: "#/components/parameters/PSU-Http-Method"
+        - $ref: "#/components/parameters/PSU-Device-ID"
+        - $ref: "#/components/parameters/PSU-Geo-Location"
         - $ref: "#/components/parameters/Authorization"
         - $ref: "#/components/parameters/TPP-Redirect-Preferred"
         - $ref: "#/components/parameters/TPP-Redirect-URI"
@@ -1433,7 +1467,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/consentsRequest'
+              $ref: '#/components/schemas/CreateConsentsRequest'
       responses:
         '201':
           description: Consent Request was correctly performed.
@@ -1447,27 +1481,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - consentStatus
-                  - _links
-                properties:
-                  consentStatus:
-                    $ref: '#/components/schemas/ConsentStatus'
-                  consentId:
-                    $ref: '#/components/schemas/consentId'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenSca Method:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
+                $ref: '#/components/schemas/CreateConsentsResponse'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -1621,6 +1635,9 @@ paths:
       responses:
         '204':
           description: Consent resource was successfully deleted.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
