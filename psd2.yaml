@@ -9,7 +9,7 @@ tags:
     - name: payments
       description: 'Initiate payments'
 info:
-  version: 0.0.2
+  version: 0.0.3
   title: OpenPSD NextGen PSD2 
   description: PSD2 API based on the Berlin Group specification 1.1 for NextGen PSD2 (May 11 2018)
   contact:
@@ -29,7 +29,6 @@ servers:
         default: https
     description: Sandbox  
 components:
-  # Reusable schemas (data models)
   schemas:
     consentId:
       type: string
@@ -605,6 +604,93 @@ components:
         combinedServiceIndicator:
           type: boolean
           description: 'If "true" indicates that a payment initiation service will be addressed in the same "session", cp. Section 8.'
+    SinglePaymentInitiationRequest:
+      type: object
+    BulkPaymentInitiationRequest:
+      type: object
+    PeriodicPaymentInitiationRequest:
+      type: object
+      required:
+        - startDate
+      properties:
+        startDate:
+          type: string
+          format: date
+          example: '2017-10-30'
+        executionRule:
+          type: string
+          enum: [following, preceeding]
+        endDate:
+          type: string
+          format: date
+          example: '2018-10-30'
+        frequency:
+          $ref: '#/components/schemas/frequency'
+        dayOfExecution:
+          type: integer
+          minimum: 1
+          maximum: 31
+    UpdatePSUDataAuthenticationRequest:
+      type: object
+      properties:
+        psuData:
+          $ref: '#/components/schemas/PSUData'
+    UpdatePSUDataAuthenticationResponse:
+      type: object
+      required:
+        - transactionStatus
+      properties:
+        chosenScaMethod:
+          $ref: '#/components/schemas/Authentication'
+        challengeData:
+          $ref: '#/components/schemas/Challenge'
+        scaMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/Authentication'
+        _links:
+          $ref: '#/components/schemas/Links'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        psuMessage:
+          $ref: '#/components/schemas/psuMessage'
+    UpdatePSUDataSelectAuthenticationRequest:
+      type: object
+      required:
+        - authenticationMethodId
+      properties:
+        authenticationMethodId:
+          type: string
+    UpdatePSUDataSelectAuthenticationResponse:
+      type: object
+      required:
+        - transactionStatus
+      properties:
+        chosenScaMethod:
+          $ref: '#/components/schemas/Authentication'
+        challengeData:
+          $ref: '#/components/schemas/Challenge'
+        _links:
+          $ref: '#/components/schemas/Links'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        psuMessage:
+          $ref: '#/components/schemas/psuMessage'
+    UpdatePSUDataIdentificationResponse:
+      type: object
+      required:
+        - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        psuMessage:
+          $ref: '#/components/schemas/psuMessage'
   # Reusable path, query, header and cookie parameters
   parameters:
     Content-Type:
@@ -654,7 +740,7 @@ components:
     payment-product:
       name: payment-product
       in: path
-      description: 'The addressed payment product, e.g. SCT. The default list of products supported in this standard is, pain.001-sepa-credit-transfers, pain.001-instant-sepa-credit-transfers, pain.001-target-2-payments or pain.001-cross-border-credit-transfers. Further products might be published by the ASPSP within its XS2A documentation.'
+      description: The addressed payment product endpoint, e.g. for SEPA Credit Transfers (SCT). The ASPSP will publish which of the payment products/endpoints will be supported.
       required: true
       schema:
         type: string
@@ -732,14 +818,6 @@ components:
       schema:
         type: string
       example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D- Trust%20GmbH,C=DE",algorithm="rsa-sha256",headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date",signature="Base64(RSA-SHA256(signing string))"'
-    TPP-Signature-Certificate:
-      name: TPP-Signature-Certificate
-      in: header
-      description: 'The certificate used for signing the request, in base64 encoding. It shall be contained if a signature is used, see above.'
-      required: false
-      schema:
-        type: string
-      example: 'VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU='
     dateFrom:
       name: dateFrom
       in: query
@@ -810,6 +888,71 @@ components:
       schema:
         type: string
       example: '172.25.77.8'
+    PSU-IP-Port:
+      name: PSU-IP-Port
+      in: header
+      description: The forwarded IP Port header field consists of the corresponding HTTP request IP Port field between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+      example: '9988'
+    PSU-Accept:
+      name: PSU-Accept
+      in: header
+      description: The forwarded IP Accept header fields consist of the corresponding HTTP request Accept header fields between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
+      in: header
+      description: The forwarded IP Accept header fields consist of the corresponding HTTP request Accept header fields between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: The forwarded IP Accept header fields consist of the corresponding HTTP request Accept header fields between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+    PSU-Accept-Language:
+      name: PSU-Accept-Language
+      in: header
+      description: The forwarded IP Accept header fields consist of the corresponding HTTP request Accept header fields between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+    PSU-User-Agent:
+      name: PSU-User-Agent
+      in: header
+      description: The forwarded Agent header field of the HTTP request between PSU and TPP, if available.
+      required: false
+      schema:
+        type: string
+    PSU-Http-Method:
+      name: PSU-Http-Method
+      in: header
+      description: HTTP method used at the PSU - TPP interface, if available.
+      required: false
+      schema:
+        type: string
+        enum: [GET, POST, PUT, DELETE, PATCH]
+    PSU-Device-ID:
+      name: PSU-Device-ID
+      in: header
+      description: UUID (Universally Unique Identifier) for a device, which is used by the PSU, if available. UUID identifies either a device or a device dependant application installation. In case of an installation identification this ID need to be unaltered until removal from device.
+      required: false
+      schema:
+        type: string
+    PSU-Geo-Location:
+      name: PSU-Geo-Location
+      in: header
+      description: The forwarded Geo Location of the corresponding HTTP request between PSU and TPP if available.
+      required: false
+      schema:
+        type: string
     deltaList:
       name: deltaList
       in: query
@@ -838,6 +981,14 @@ components:
       required: false
       schema:
         type: string
+    TPP-Signature-Certificate:
+      name: TPP-Signature-Certificate
+      in: header
+      description: 'The certificate used for signing the request, in base64 encoding. It shall be contained if a signature is used, see above.'
+      required: false
+      schema:
+        type: string
+      example: 'VFBQJ3NfZUlEQVNfQ2VydGlmaWNhdGU='
     Accept: 
       name: Accept
       in: header
@@ -1337,6 +1488,16 @@ paths:
         - $ref: "#/components/parameters/PSU-ID-Type"
         - $ref: "#/components/parameters/PSU-Corporate-ID"
         - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/PSU-IP-Address"
+        - $ref: "#/components/parameters/PSU-IP-Port"
+        - $ref: "#/components/parameters/PSU-Accept"
+        - $ref: "#/components/parameters/PSU-Accept-Charset"
+        - $ref: "#/components/parameters/PSU-Accept-Encoding"
+        - $ref: "#/components/parameters/PSU-Accept-Language"
+        - $ref: "#/components/parameters/PSU-User-Agent"
+        - $ref: "#/components/parameters/PSU-Http-Method"
+        - $ref: "#/components/parameters/PSU-Device-ID"
+        - $ref: "#/components/parameters/PSU-Geo-Location"
         - $ref: "#/components/parameters/Digest"
         - $ref: "#/components/parameters/Signature"
         - $ref: "#/components/parameters/TPP-Signature-Certificate"
@@ -1347,43 +1508,24 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                psuData:
-                  $ref: '#/components/schemas/PSUData'
-                authenticationMethodId:
-                  type: string
-                scaAuthenticationData:
-                  type: string
+              oneOf:
+                - $ref: '#/components/schemas/UpdatePSUDataAuthenticationRequest'
+                - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationRequest'
       responses:
         '201':
-          description: OK
+          description: Created
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UpdatePSUDataAuthenticationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataIdentificationResponse'
           headers:
             X-Request-ID:
               $ref: '#/components/headers/X-Request-ID'
             ASPSP-SCA-Approach:
               $ref: '#/components/headers/ASPSP-SCA-Approach'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  consentStatus:
-                    $ref: '#/components/schemas/ConsentStatus'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -1455,6 +1597,141 @@ paths:
           $ref: '#/components/responses/403Forbidden'
         '500':
           $ref: '#/components/responses/500InternalServerError'
+  '/{payment-service}/{payment-product}':
+    post:
+      tags:
+        - payments
+      summary: creates a payment
+      description: 'Creates a payment initiation resource addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment.'
+      operationId: createPayment
+      parameters:
+        - $ref: '#/components/parameters/payment-service'
+        - $ref: '#/components/parameters/payment-product'
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: "#/components/parameters/X-Request-ID"
+        - $ref: "#/components/parameters/PSU-ID"
+        - $ref: "#/components/parameters/PSU-ID-Type"
+        - $ref: "#/components/parameters/PSU-Corporate-ID"
+        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/PSU-IP-Address"
+        - $ref: "#/components/parameters/PSU-IP-Port"
+        - $ref: "#/components/parameters/PSU-Accept"
+        - $ref: "#/components/parameters/PSU-Accept-Charset"
+        - $ref: "#/components/parameters/PSU-Accept-Encoding"
+        - $ref: "#/components/parameters/PSU-Accept-Language"
+        - $ref: "#/components/parameters/PSU-User-Agent"
+        - $ref: "#/components/parameters/PSU-Http-Method"
+        - $ref: "#/components/parameters/PSU-Device-ID"
+        - $ref: "#/components/parameters/PSU-Geo-Location"
+        - $ref: "#/components/parameters/Authorization"
+        - $ref: "#/components/parameters/Consent-ID"
+        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
+        - $ref: "#/components/parameters/TPP-Redirect-URI"
+        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Signature"
+        - $ref: "#/components/parameters/TPP-Signature-Certificate"
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/SinglePaymentInitiationRequest'
+                - $ref: '#/components/schemas/BulkPaymentInitiationRequest'
+                - $ref: '#/components/schemas/PeriodicPaymentInitiationRequest'
+          application/xml:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/SinglePaymentInitiationRequest'
+                - $ref: '#/components/schemas/BulkPaymentInitiationRequest'
+                - $ref: '#/components/schemas/PeriodicPaymentInitiationRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - transactionStatus
+                  - paymentId
+                  - _links
+                properties:
+                  transactionStatus:
+                    $ref: '#/components/schemas/TransactionStatus'
+                  paymentId:
+                    $ref: '#/components/schemas/paymentId'
+                  transactionFees:
+                    $ref: '#/components/schemas/Amount'
+                  transactionFeeIndicator:
+                    $ref: '#/components/schemas/transactionFeeIndicator'
+                  scaMethods:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Authentication'
+                  chosenScaMethod:
+                    $ref: '#/components/schemas/Authentication'
+                  challengeData:
+                    $ref: '#/components/schemas/Challenge'
+                  _links:
+                    $ref: '#/components/schemas/Links'
+                  psuMessage:
+                    $ref: '#/components/schemas/psuMessage'
+                  tppMessages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TppMessage'
+            application/xml:
+              schema:
+                type: object
+                required:
+                  - transactionStatus
+                  - paymentId
+                  - _links
+                properties:
+                  transactionStatus:
+                    $ref: '#/components/schemas/TransactionStatus'
+                  paymentId:
+                    $ref: '#/components/schemas/paymentId'
+                  transactionFees:
+                    $ref: '#/components/schemas/Amount'
+                  transactionFeeIndicator:
+                    type: boolean
+                    description: 'If equals “true”, the transaction will involve specific transaction cost as shown by the ASPSP in their public price list or as agreed between ASPSP and PSU. If equals “false”, the transaction will not involve additional specific transaction costs to the PSU.'
+                  scaMethods:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Authentication'
+                  chosenScaMethod:
+                    $ref: '#/components/schemas/Authentication'
+                  challengeData:
+                    $ref: '#/components/schemas/Challenge'
+                  _links:
+                    $ref: '#/components/schemas/Links'
+                  psuMessage:
+                    $ref: '#/components/schemas/psuMessage'
+                  tppMessages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TppMessage'
+          headers:
+            Location:
+              $ref: '#/components/headers/Location'
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            ASPSP-SCA-Approach:
+              $ref: '#/components/headers/ASPSP-SCA-Approach'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
   '/{payment-service}/{payment-product}/{paymentId}':
     put:
       tags:
@@ -1471,6 +1748,16 @@ paths:
         - $ref: "#/components/parameters/PSU-ID-Type"
         - $ref: "#/components/parameters/PSU-Corporate-ID"
         - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
+        - $ref: "#/components/parameters/PSU-IP-Address"
+        - $ref: "#/components/parameters/PSU-IP-Port"
+        - $ref: "#/components/parameters/PSU-Accept"
+        - $ref: "#/components/parameters/PSU-Accept-Charset"
+        - $ref: "#/components/parameters/PSU-Accept-Encoding"
+        - $ref: "#/components/parameters/PSU-Accept-Language"
+        - $ref: "#/components/parameters/PSU-User-Agent"
+        - $ref: "#/components/parameters/PSU-Http-Method"
+        - $ref: "#/components/parameters/PSU-Device-ID"
+        - $ref: "#/components/parameters/PSU-Geo-Location"
         - $ref: "#/components/parameters/Digest"
         - $ref: "#/components/parameters/Signature"
         - $ref: "#/components/parameters/TPP-Signature-Certificate"
@@ -1481,40 +1768,19 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                psuData:
-                  $ref: '#/components/schemas/PSUData'
-                authenticationMethodId:
-                  type: string
-                scaAuthenticationData:
-                  type: string
+              oneOf:
+                - $ref: '#/components/schemas/UpdatePSUDataAuthenticationRequest'
+                - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationRequest'
       responses:
         '201':
-          description: OK result with Decoupled Approach
+          description: Created
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - transactionStatus
-                properties:
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  consentStatus:
-                    $ref: '#/components/schemas/ConsentStatus'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
+                oneOf:
+                  - $ref: '#/components/schemas/UpdatePSUDataAuthenticationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataIdentificationResponse'
           headers:
             X-Request-ID:
               $ref: '#/components/headers/X-Request-ID'
@@ -1613,342 +1879,6 @@ paths:
                     $ref: '#/components/schemas/TransactionStatus'
                   scaStatus:
                     $ref: '#/components/schemas/scaStatus'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-  '/payments/{payment-product}':
-    post:
-      tags:
-        - payments
-      summary: create a single payment
-      description: 'Creates a payment initiation resource addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      operationId: createSinglePayment
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/Consent-ID"
-        - $ref: "#/components/parameters/PSU-IP-Address"
-        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
-        - $ref: "#/components/parameters/TPP-Redirect-URI"
-        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-          application/xml:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                  - paymentId
-                  - _links
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  paymentId:
-                    $ref: '#/components/schemas/paymentId'
-                  transactionFees:
-                    $ref: '#/components/schemas/Amount'
-                  transactionFeeIndicator:
-                    $ref: '#/components/schemas/transactionFeeIndicator'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-                  tppMessages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TppMessage'
-            application/xml:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                  - paymentId
-                  - _links
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  paymentId:
-                    $ref: '#/components/schemas/paymentId'
-                  transactionFees:
-                    $ref: '#/components/schemas/Amount'
-                  transactionFeeIndicator:
-                    type: boolean
-                    description: 'If equals “true”, the transaction will involve specific transaction cost as shown by the ASPSP in their public price list or as agreed between ASPSP and PSU. If equals “false”, the transaction will not involve additional specific transaction costs to the PSU.'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-                  tppMessages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TppMessage'
-          headers:
-            Location:
-              $ref: '#/components/headers/Location'
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-            ASPSP-SCA-Approach:
-              $ref: '#/components/headers/ASPSP-SCA-Approach'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-  '/bulk-payments/{payment-product}':
-    post:
-      tags:
-        - payments
-      summary: create a bulk payment
-      operationId: createBulkPayment
-      description: 'Creates a payment initiation resource addressable under {paymentId} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/Consent-ID"
-        - $ref: "#/components/parameters/PSU-IP-Address"
-        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
-        - $ref: "#/components/parameters/TPP-Redirect-URI"
-        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-          application/xml:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: OK
-          headers:
-            Location:
-              $ref: '#/components/headers/Location'
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-            ASPSP-SCA-Approach:
-              $ref: '#/components/headers/ASPSP-SCA-Approach'
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                  - paymentId
-                  - _links
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  paymentId:
-                    $ref: '#/components/schemas/paymentId'
-                  transactionFees:
-                    $ref: '#/components/schemas/Amount'
-                  transactionFeeIndicator:
-                    $ref: '#/components/schemas/transactionFeeIndicator'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-                  tppMessages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TppMessage'
-        '400':
-          $ref: '#/components/responses/400BadRequest'
-        '401':
-          $ref: '#/components/responses/401Unauthorized'
-        '403':
-          $ref: '#/components/responses/403Forbidden'
-        '500':
-          $ref: '#/components/responses/500InternalServerError'
-  '/periodic-payments/{payment-product}':
-    post:
-      tags:
-        - payments
-      summary: create a periodic payment
-      operationId: createPeriodicPayment
-      description: 'Creates a payment initiation resource addressable under {paymentID} with all data relevant for the corresponding payment product. This is the first step in the API to initiate the related payment'
-      parameters:
-        - $ref: '#/components/parameters/payment-product'
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/PSU-ID"
-        - $ref: "#/components/parameters/PSU-ID-Type"
-        - $ref: "#/components/parameters/PSU-Corporate-ID"
-        - $ref: "#/components/parameters/PSU-Corporate-ID-Type"
-        - $ref: "#/components/parameters/Authorization"
-        - $ref: "#/components/parameters/Consent-ID"
-        - $ref: "#/components/parameters/PSU-IP-Address"
-        - $ref: "#/components/parameters/TPP-Redirect-Preferred"
-        - $ref: "#/components/parameters/TPP-Redirect-URI"
-        - $ref: "#/components/parameters/TPP-Nok-Redirect-URI"
-        - $ref: "#/components/parameters/Digest"
-        - $ref: "#/components/parameters/Signature"
-        - $ref: "#/components/parameters/TPP-Signature-Certificate"
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                startDate:
-                  type: string
-                  format: date
-                executionRule:
-                  type: string
-                endDate:
-                  type: string
-                  format: date
-                frequency:
-                  $ref: "#/components/schemas/frequency"
-                dayOfExecution:
-                  type: integer
-                  minimum: 1
-                  maximum: 31
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                  - paymentId
-                  - _links
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  paymentId:
-                    $ref: '#/components/schemas/paymentId'
-                  transactionFees:
-                    $ref: '#/components/schemas/Amount'
-                  transactionFeeIndicator:
-                    $ref: '#/components/schemas/transactionFeeIndicator'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-                  tppMessages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TppMessage'
-            application/xml:
-              schema:
-                type: object
-                required:
-                  - transactionStatus
-                  - paymentId
-                  - _links
-                properties:
-                  transactionStatus:
-                    $ref: '#/components/schemas/TransactionStatus'
-                  paymentId:
-                    $ref: '#/components/schemas/paymentId'
-                  transactionFees:
-                    $ref: '#/components/schemas/Amount'
-                  transactionFeeIndicator:
-                    type: boolean
-                    description: 'If equals “true”, the transaction will involve specific transaction cost as shown by the ASPSP in their public price list or as agreed between ASPSP and PSU. If equals “false”, the transaction will not involve additional specific transaction costs to the PSU.'
-                  scaMethods:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Authentication'
-                  chosenScaMethod:
-                    $ref: '#/components/schemas/Authentication'
-                  challengeData:
-                    $ref: '#/components/schemas/Challenge'
-                  _links:
-                    $ref: '#/components/schemas/Links'
-                  psuMessage:
-                    $ref: '#/components/schemas/psuMessage'
-                  tppMessages:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TppMessage'
-          headers:
-            Location:
-              $ref: '#/components/headers/Location'
-            X-Request-ID:
-              $ref: '#/components/headers/X-Request-ID'
-            ASPSP-SCA-Approach:
-              $ref: '#/components/headers/ASPSP-SCA-Approach'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
