@@ -49,7 +49,10 @@ components:
       type: boolean
     scaStatus:
       type: string
-      description: 'This data element is containing information about the status of the SCA method applied. This is free text but might be coded in a future version of the specification.'
+      description: This data element is containing information about the status of the SCA method applied. This is free text but might be coded in a future version of the specification.
+    scaAuthenticationData:
+      type: string
+      description: SCA authentication data, depending on the chosen authentication method. If the data is binary, then it is base64 encoded.
     psuMessage:
       type: string
       description: 'Text to be displayed to the PSU'
@@ -691,6 +694,22 @@ components:
           $ref: '#/components/schemas/ConsentStatus'
         psuMessage:
           $ref: '#/components/schemas/psuMessage'
+    UpdatePSUDataTransactionAuthorisationRequest:
+      type: object
+      required:
+        - scaAuthenticationData
+      properties:
+        scaAuthenticationData:
+          $ref: '#/components/schemas/scaAuthenticationData'
+    UpdatePSUDataTransactionAuthorisationResponse:
+      type: object
+      required:
+        - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
   # Reusable path, query, header and cookie parameters
   parameters:
     Content-Type:
@@ -1511,6 +1530,7 @@ paths:
               oneOf:
                 - $ref: '#/components/schemas/UpdatePSUDataAuthenticationRequest'
                 - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationRequest'
+                - $ref: '#/components/schemas/UpdatePSUDataTransactionAuthorisationRequest'
       responses:
         '201':
           description: Created
@@ -1521,6 +1541,7 @@ paths:
                   - $ref: '#/components/schemas/UpdatePSUDataAuthenticationResponse'
                   - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationResponse'
                   - $ref: '#/components/schemas/UpdatePSUDataIdentificationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataTransactionAuthorisationResponse'
           headers:
             X-Request-ID:
               $ref: '#/components/headers/X-Request-ID'
@@ -1771,6 +1792,7 @@ paths:
               oneOf:
                 - $ref: '#/components/schemas/UpdatePSUDataAuthenticationRequest'
                 - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationRequest'
+                - $ref: '#/components/schemas/UpdatePSUDataTransactionAuthorisationRequest'
       responses:
         '201':
           description: Created
@@ -1781,6 +1803,7 @@ paths:
                   - $ref: '#/components/schemas/UpdatePSUDataAuthenticationResponse'
                   - $ref: '#/components/schemas/UpdatePSUDataSelectAuthenticationResponse'
                   - $ref: '#/components/schemas/UpdatePSUDataIdentificationResponse'
+                  - $ref: '#/components/schemas/UpdatePSUDataTransactionAuthorisationResponse'
           headers:
             X-Request-ID:
               $ref: '#/components/headers/X-Request-ID'
