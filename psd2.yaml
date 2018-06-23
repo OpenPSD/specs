@@ -1477,7 +1477,7 @@ paths:
           $ref: '#/components/responses/500InternalServerError'
     put:
       tags:
-        - Consent
+        - consents
       summary: update consent
       operationId: updateConsent
       description: 'Updates data on the consent resource, authorises a consent within the Embedded SCA Approach where needed.'
@@ -1536,7 +1536,7 @@ paths:
           $ref: '#/components/responses/500InternalServerError'
     delete:
       tags:
-        - Consent
+        - consents
       summary: delete consent
       description: Deletes a created consent with ID.
       operationId: deleteConsent
