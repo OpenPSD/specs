@@ -1,5 +1,8 @@
 # PSD2 specifications
 
+## Component Overview
+![Overview](components_overview.png)
+
 openAPI 3.0 for PSD2 based on the [Berlin Group specifications](https://www.berlin-group.org/nextgenpsd2-downloads "Berling Group downloads")
 
 Please note that the `psd2_swagger2.yaml` file is the result of an automatic conversion using APIMATIC. Unfortunatly this process is not working perfectly, and some features of the 3.0 spec may not be reliably transfered to the 2.0 one.
